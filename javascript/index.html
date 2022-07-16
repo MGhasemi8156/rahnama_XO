@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<script type="text/javascript">
+		let players = window.prompt("please enter number of players (maximum is 7)");
+		if (players > 7) players = 7;
+		let mapSize = window.prompt("please enter map size");
+	</script>
+
+	<div id="gameDiv" class="game">
+  	</div>
+
+	<script type="text/javascript">
+
+		let map = [];
+		for (let i = 0; i < mapSize; i++) {
+			map[i] = [];
+			for (let j = 0; j < mapSize; j++) {
+				const cell = document.createElement('div');
+				cell.className = "cell";
+				cell.onclick = changeColor;
+				cell.id = i * mapSize + j;
+				document.getElementById("gameDiv").appendChild(cell);
+				map[i][j] = 0;
+			}
+		}
+
+		const colors = ["#1fe0da", "#156bd4", "#b51482", "#c9104b", "#1a9e0b", "#adcc10",
+						"#cc8d10"];
+
+		let width = mapSize * 102;
+		document.getElementById("gameDiv").style.width = width + "px";
+		document.getElementById("gameDiv").style.gridTemplate = "repeat(" + mapSize + ",100px) / repeat(" + mapSize + ",100px)";
+
+		let currentPlayer = 1;
+
+		function changeColor(event) {
+			event.target.style.backgroundColor = colors[currentPlayer - 1];
+
+			let id = event.target.id;
+
+			let cellI = Math.floor(id / mapSize);
+			let cellJ = id - cellI * mapSize;
+
+			map[cellI][cellJ] = currentPlayer;
+
+			if (currentPlayer == players) {
+				currentPlayer = 1
+			} else {
+				currentPlayer += 1;
+			}
+			checkWin();
+		}
+
+		function checkWin() {
+			let winner = 0;
+			winner = checkHorizontal();
+			if (winner != 0) {
+				window.alert("You win" + winner);
+				return;
+			}
+
+			winner = checkVertical();
+			if (winner != 0) {
+				window.alert("you win player" + winner);
+				return;
+			}
+
+			winner = checkOblique1();
+			if (winner != 0) {
+				window.alert("you win player" + winner);
+				return;
+			}
+
+			winner = checkOblique2();
+			if (winner != 0) {
+				window.alert("you win player" + winner);
+				return;
+			}
+
+		}
+
+
+		function checkHorizontal() {
+	        for (let i = 0; i < mapSize; i++) {
+	            for (let j = 0; j < mapSize - 2; j++) {
+	                let value = map[i][j];
+	                if (value != 0 && map[i][j + 1] == value && map[i][j + 2] == value) {
+	                    return value;
+	                }
+	            }
+	        }
+	        return 0;
+    	}
+
+		function checkVertical() {
+	        for (let i = 0; i < mapSize - 2; i++) {
+	            for (let j = 0; j < mapSize; j++) {
+	                let value = map[i][j];
+	                if (value != 0 && map[i + 1][j] == value && map[i + 2][j] == value) {
+	                    return value;
+	                }
+	            }
+	        }
+	        return 0;
+    	}
+
+		function checkOblique1() {
+	        for (let i = 0; i < mapSize - 2; i++) {
+	            for (let j = 0; j < mapSize - 2; j++) {
+	                let value = map[i][j];
+	                if (value != 0 && map[i + 1][j + 1] == value && map[i + 2][j + 2] == value) {
+	                    return value;
+	                }
+	            }
+	        }
+	        return 0;
+    	}
+
+		function checkOblique2() {
+	        for (let i = 0; i < mapSize - 2; i++) {
+	            for (let j = 2; j < mapSize; j++) {
+	                let value = map[i][j];
+	                if (value != 0 && map[i + 1][j - 1] == value && map[i + 2][j - 2] == value) {
+	                    return value;
+	                }
+	            }
+	        }
+	        return 0;
+    	}
+
+	</script>
+</body>
+</html>
